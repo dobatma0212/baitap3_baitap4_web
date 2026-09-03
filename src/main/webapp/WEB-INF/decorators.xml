@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+    <decorator-prefix></decorator-prefix>
+
+    <mapping path="/login*" exclude="true" />
+    <mapping path="/register*" exclude="true" />
+    <mapping path="/logout*" exclude="true" />
+    <mapping path="/views/login.jsp" exclude="true" />
+    <mapping path="/views/register.jsp" exclude="true" />
+    <mapping path="/image*" exclude="true" />
+    <mapping path="/static/*" exclude="true" />
+    <mapping path="/assets/*" exclude="true" />
+
+    <mapping path="/admin/*" decorator="/decorators/admin.jsp" />
+    <mapping path="/manager/*" decorator="/decorators/manager.jsp" />
+    <mapping path="/*" decorator="/decorators/web.jsp" />
+</sitemesh>

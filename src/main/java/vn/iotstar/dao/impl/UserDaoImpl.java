@@ -47,6 +47,24 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void update(User user) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction trans = em.getTransaction();
+        try {
+            trans.begin();
+            em.merge(user);
+            trans.commit();
+        } catch (Exception e) {
+            if (trans.isActive()) {
+                trans.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public boolean checkExistEmail(String email) {
         EntityManager em = JPAConfig.getEntityManager();
         try {

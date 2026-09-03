@@ -6,6 +6,10 @@ public interface UserService {
     User login(String username, String password);
     User get(String username);
     void insert(User user);
+    void update(User user);
+    default void edit(User user) {
+        update(user);
+    }
     boolean register(String username, String password, String email, String fullname, String phone);
     boolean checkExistEmail(String email);
     boolean checkExistUsername(String username);

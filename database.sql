@@ -10,9 +10,10 @@ CREATE TABLE `User` (
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `fullname` VARCHAR(150) NULL,
     `password` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(20) NULL,
+    `images` VARCHAR(255) NULL,
     `avatar` VARCHAR(255) NULL,
     `roleid` INT DEFAULT 5, -- 1: Admin, 2: Manager, 5: User/Khách hàng
-    `phone` VARCHAR(20) NULL,
     `createddate` DATE NULL
 );
 
@@ -22,11 +23,11 @@ CREATE TABLE `Category` (
     `icons` VARCHAR(255) NULL
 );
 
-INSERT INTO `User` (`email`, `username`, `fullname`, `password`, `avatar`, `roleid`, `phone`, `createddate`)
+INSERT INTO `User` (`email`, `username`, `fullname`, `password`, `phone`, `images`, `avatar`, `roleid`, `createddate`)
 VALUES 
-('admin@hcmute.edu.vn', 'admin', 'Quản Trị Viên', '123456', NULL, 1, '0908617108', CURDATE()),
-('manager@hcmute.edu.vn', 'manager', 'Quản Lý Cửa Hàng', '123456', NULL, 2, '0901234567', CURDATE()),
-('dobientan@hcmute.edu.vn', 'dobt', 'Biện Tấn Đô', '123456', NULL, 5, '0908617108', CURDATE());
+('admin@hcmute.edu.vn', 'admin', 'Quản Trị Viên', '123456', '0908617108', NULL, NULL, 1, CURDATE()),
+('manager@hcmute.edu.vn', 'manager', 'Quản Lý Cửa Hàng', '123456', '0901234567', NULL, NULL, 2, CURDATE()),
+('dobientan@hcmute.edu.vn', 'dobt', 'Biện Tấn Đô', '123456', '0908617108', NULL, NULL, 5, CURDATE());
 
 INSERT INTO `Category` (`cate_name`, `icons`)
 VALUES 

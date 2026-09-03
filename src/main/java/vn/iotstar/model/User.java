@@ -44,6 +44,9 @@ public class User implements Serializable {
     @Column(name = "avatar", length = 255)
     private String avatar;
 
+    @Column(name = "images", length = 255)
+    private String images;
+
     @Column(name = "roleid")
     private int roleid;
 
@@ -132,6 +135,14 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
     public int getRoleid() {
         return roleid;
     }
@@ -159,7 +170,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User [id=" + id + ", email=" + email + ", userName=" + userName + ", fullName=" + fullName
-                + ", passWord=" + passWord + ", avatar=" + avatar + ", roleid=" + roleid + ", phone=" + phone
-                + ", createdDate=" + createdDate + "]";
+                + ", passWord=" + passWord + ", phone=" + phone + ", images=" + images + ", avatar=" + avatar
+                + ", roleid=" + roleid + ", createdDate=" + createdDate + "]";
     }
 }
