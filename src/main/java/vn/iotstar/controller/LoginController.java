@@ -25,6 +25,18 @@ public class LoginController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/waiting");
             return;
         }
+        if (session != null) {
+            String alertSuccess = (String) session.getAttribute("alertSuccess");
+            if (alertSuccess != null) {
+                req.setAttribute("alertSuccess", alertSuccess);
+                session.removeAttribute("alertSuccess");
+            }
+            String alert = (String) session.getAttribute("alert");
+            if (alert != null) {
+                req.setAttribute("alert", alert);
+                session.removeAttribute("alert");
+            }
+        }
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -54,7 +66,7 @@ public class LoginController extends HttpServlet {
         }
         String alertMsg = "";
 
-        if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
+        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
             alertMsg = "Tài khoản hoặc mật khẩu không được rỗng";
             req.setAttribute("alert", alertMsg);
             req.getRequestDispatcher("/views/login.jsp").forward(req, resp);
@@ -62,12 +74,22 @@ public class LoginController extends HttpServlet {
         }
 
         UserService service = new UserServiceImpl();
-        User user = service.login(username, password);
+        User user = service.login(username.trim(), password.trim());
         if (user != null) {
+            // Kiểm tra trạng thái kích hoạt tài khoản
+            if (user.getStatus() == 0) {
+                HttpSession session = req.getSession(true);
+                session.setAttribute("verify_email", user.getEmail());
+                session.setAttribute("alert", "Tài khoản chưa được kích hoạt qua OTP. Vui lòng nhập mã OTP để kích hoạt!");
+                String emailParam = (user.getEmail() != null) ? java.net.URLEncoder.encode(user.getEmail(), java.nio.charset.StandardCharsets.UTF_8) : "";
+                resp.sendRedirect(req.getContextPath() + "/verify-otp?email=" + emailParam);
+                return;
+            }
+
             HttpSession session = req.getSession(true);
             session.setAttribute("account", user);
             if (isRememberMe) {
-                saveRemeberMe(resp, username);
+                saveRemeberMe(resp, username.trim());
             }
             resp.sendRedirect(req.getContextPath() + "/waiting");
         } else {

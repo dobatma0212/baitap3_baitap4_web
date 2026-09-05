@@ -80,16 +80,22 @@ baitap1/
 > ALTER TABLE `User` ADD COLUMN IF NOT EXISTS `fullname` VARCHAR(150) NULL;
 > ALTER TABLE `User` ADD COLUMN IF NOT EXISTS `phone` VARCHAR(20) NULL;
 > ALTER TABLE `User` ADD COLUMN IF NOT EXISTS `images` VARCHAR(255) NULL;
+> ALTER TABLE `User` ADD COLUMN IF NOT EXISTS `status` INT DEFAULT 0;
+> ALTER TABLE `User` ADD COLUMN IF NOT EXISTS `code` VARCHAR(10) NULL;
 > ```
 
-### 2. Cấu hình Kết Nối CSDL & Thư Mục Upload
+### 2. Cấu hình Kết Nối CSDL, Email & Thư Mục Upload
 1. **Kết nối CSDL**: Mở file `src/main/resources/META-INF/persistence.xml` và chỉnh sửa mật khẩu MySQL (nếu khác `123456`):
    ```xml
    <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/baitap1?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true" />
    <property name="jakarta.persistence.jdbc.user" value="root" />
    <property name="jakarta.persistence.jdbc.password" value="MẬT_KHẨU_CỦA_BẠN" />
    ```
-2. **Thư mục Upload**: File upload mặc định được lưu vào `C:\upload` (định nghĩa tại [`Constant.DIR`](src/main/java/vn/iotstar/util/Constant.java)). Hệ thống sẽ tự động tạo thư mục con `C:\upload\category` và `C:\upload\user`.
+2. **Cấu hình Email gửi OTP**: Mở file `src/main/java/vn/iotstar/util/Constant.java` tại class `Constant.Mail`:
+   - Thay đổi `USERNAME` (địa chỉ Gmail người gửi).
+   - Thay đổi `PASSWORD` (Mật khẩu ứng dụng 16 ký tự của Gmail - App Password).
+   - *Lưu ý*: Khi kiểm thử trong môi trường localhost hoặc chưa cấu hình App Password, hệ thống **tự động in mã OTP ra màn hình Console/Terminal** (`[OTP SYSTEM LOG] MÃ OTP XÁC THỰC LÀ: [xxxxxx]`) để có thể kiểm tra và kích hoạt ngay lập tức.
+3. **Thư mục Upload**: File upload mặc định được lưu vào `C:\upload` (định nghĩa tại [`Constant.DIR`](src/main/java/vn/iotstar/util/Constant.java)). Hệ thống sẽ tự động tạo thư mục con `C:\upload\category` và `C:\upload\user`.
 
 ### 3. Build & Chạy Ứng Dụng
 - **Bằng Maven**:
@@ -114,7 +120,16 @@ baitap1/
 ## 📌 Các Tính Năng Chính
 
 ### 1. Xác thực & Phân quyền Người dùng (Authentication & Authorization)
-- **Đăng nhập / Đăng ký**: Kiểm tra ràng buộc dữ liệu, mã hóa và bảo mật.
+- **Đăng ký kèm xác thực OTP qua Email**:
+  - Khi người dùng đăng ký, hệ thống tự động sinh mã OTP 6 chữ số ngẫu nhiên.
+  - Tài khoản được lưu với trạng thái chờ kích hoạt (`status = 0`) và lưu mã OTP vào trường `code`.
+  - Hệ thống gửi email chứa mã OTP kích hoạt đến địa chỉ email đăng ký (Jakarta Mail + Angus Mail qua SMTP Gmail).
+  - Tự động in mã OTP ra Server Console (`[OTP SYSTEM LOG]`) để thuận tiện kiểm thử khi chưa cấu hình mật khẩu ứng dụng Gmail.
+  - Người dùng được chuyển hướng đến trang `/verify-otp` để nhập mã xác thực.
+  - Hỗ trợ tính năng **Gửi lại mã OTP (Resend OTP)** khi mã hết hạn hoặc chưa nhận được thư.
+  - Sau khi xác thực đúng mã OTP, tài khoản được kích hoạt (`status = 1`, `code = null`) và chuyển về trang Đăng nhập.
+- **Đăng nhập an toàn & Kiểm tra kích hoạt**:
+  - Tự động kiểm tra trạng thái tài khoản: Nếu tài khoản chưa kích hoạt (`status = 0`), hệ thống chặn đăng nhập và hướng dẫn chuyển tiếp sang màn hình xác thực OTP.
 - **Ghi nhớ đăng nhập (Remember Me)**: Lưu thông tin tài khoản an toàn qua Cookie.
 - **Phân quyền tự động**: Sau đăng nhập, `WaitingController` tự động điều hướng người dùng về đúng trang quản trị theo vai trò (Role 1: Admin, Role 2: Manager, Role 5: User).
 

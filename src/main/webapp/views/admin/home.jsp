@@ -29,8 +29,11 @@
                         <p><strong>Role ID:</strong> ${sessionScope.account.roleid} (Admin)</p>
                     </div>
                     <div class="card-footer bg-light">
-                        <a href="${pageContext.request.contextPath}/admin/category/list" class="btn btn-primary btn-block">
+                        <a href="${pageContext.request.contextPath}/admin/category/list" class="btn btn-primary btn-block mb-2">
                             <i class="fas fa-boxes"></i> Quản Lý Danh Mục (Categories)
+                        </a>
+                        <a href="${pageContext.request.contextPath}/admin/product/list" class="btn btn-success btn-block">
+                            <i class="fas fa-box-open"></i> Quản Lý Sản Phẩm (Products)
                         </a>
                     </div>
                 </div>

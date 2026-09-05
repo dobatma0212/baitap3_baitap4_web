@@ -10,9 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import vn.iotstar.service.UserService;
 import vn.iotstar.service.impl.UserServiceImpl;
 import vn.iotstar.util.Constant;
+import vn.iotstar.util.EmailUtil;
 
 @WebServlet(urlPatterns = "/register")
 public class RegisterController extends HttpServlet {
@@ -54,26 +58,47 @@ public class RegisterController extends HttpServlet {
         UserService service = new UserServiceImpl();
         String alertMsg = "";
 
-        if (service.checkExistEmail(email)) {
+        if (email == null || email.trim().isEmpty() || username == null || username.trim().isEmpty()
+                || password == null || password.trim().isEmpty()) {
+            alertMsg = "Vui lòng nhập đầy đủ các trường bắt buộc!";
+            req.setAttribute("alert", alertMsg);
+            req.getRequestDispatcher(Constant.Path.REGISTER).forward(req, resp);
+            return;
+        }
+
+        if (service.checkExistEmail(email.trim())) {
             alertMsg = "Email đã tồn tại!";
             req.setAttribute("alert", alertMsg);
             req.getRequestDispatcher(Constant.Path.REGISTER).forward(req, resp);
             return;
         }
 
-        if (service.checkExistUsername(username)) {
+        if (service.checkExistUsername(username.trim())) {
             alertMsg = "Tài khoản đã tồn tại!";
             req.setAttribute("alert", alertMsg);
             req.getRequestDispatcher(Constant.Path.REGISTER).forward(req, resp);
             return;
         }
 
-        boolean isSuccess = service.register(username, password, email, fullname, phone);
+        // 1. Sinh mã OTP ngẫu nhiên 6 chữ số
+        String otp = EmailUtil.generateOtp();
+
+        // 2. Lưu tài khoản ở trạng thái chờ kích hoạt (status = 0, code = otp)
+        boolean isSuccess = service.register(username.trim(), password.trim(), email.trim(), fullname, phone, otp);
+
         if (isSuccess) {
-            req.setAttribute("alert", alertMsg);
-            resp.sendRedirect(req.getContextPath() + "/login");
+            // 3. Gửi email chứa mã OTP đến người dùng
+            EmailUtil.sendOtpEmail(email.trim(), otp);
+
+            // 4. Lưu email vào session và chuyển hướng tới màn hình xác thực OTP
+            HttpSession session = req.getSession(true);
+            session.setAttribute("verify_email", email.trim());
+            session.setAttribute("success_msg", "Mã OTP kích hoạt tài khoản đã được gửi đến email " + email.trim() + ". Vui lòng kiểm tra hộp thư!");
+
+            String encodedEmail = URLEncoder.encode(email.trim(), StandardCharsets.UTF_8);
+            resp.sendRedirect(req.getContextPath() + "/verify-otp?email=" + encodedEmail);
         } else {
-            alertMsg = "System error!";
+            alertMsg = "Đăng ký không thành công, vui lòng thử lại!";
             req.setAttribute("alert", alertMsg);
             req.getRequestDispatcher(Constant.Path.REGISTER).forward(req, resp);
         }

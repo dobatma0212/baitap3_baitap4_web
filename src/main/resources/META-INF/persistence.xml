@@ -9,6 +9,7 @@
         <!-- Khai báo Entity -->
         <class>vn.iotstar.model.User</class>
         <class>vn.iotstar.model.Category</class>
+        <class>vn.iotstar.model.Product</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />

@@ -57,6 +57,12 @@
                 </div>
             </c:if>
 
+            <c:if test="${alertSuccess != null}">
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle mr-2"></i>${alertSuccess}
+                </div>
+            </c:if>
+
             <form action="${pageContext.request.contextPath}/login" method="post">
                 <div class="form-group">
                     <label for="username">Tài khoản</label>
@@ -83,7 +89,7 @@
                         <input type="checkbox" class="custom-control-input" id="remember" name="remember">
                         <label class="custom-control-label" for="remember">Nhớ tôi</label>
                     </div>
-                    <a href="#" class="text-muted" style="font-size: 14px;">Quên mật khẩu?</a>
+                    <a href="${pageContext.request.contextPath}/forgot-password" class="text-muted" style="font-size: 14px;">Quên mật khẩu?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block btn-login mt-4">Đăng nhập</button>

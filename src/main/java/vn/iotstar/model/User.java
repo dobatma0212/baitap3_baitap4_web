@@ -48,10 +48,16 @@ public class User implements Serializable {
     private String images;
 
     @Column(name = "roleid")
-    private int roleid;
+    private Integer roleid;
 
     @Column(name = "phone", length = 20)
     private String phone;
+
+    @Column(name = "status")
+    private Integer status = 0; // 0: Chờ kích hoạt qua OTP, 1: Đã kích hoạt
+
+    @Column(name = "code", length = 10)
+    private String code;
 
     @Column(name = "createddate")
     private Date createdDate;
@@ -83,6 +89,21 @@ public class User implements Serializable {
         this.passWord = passWord;
         this.avatar = avatar;
         this.roleid = roleid;
+        this.phone = phone;
+        this.createdDate = createdDate;
+    }
+
+    public User(String email, String userName, String fullName, String passWord, String avatar, int roleid,
+            int status, String code, String phone, Date createdDate) {
+        super();
+        this.email = email;
+        this.userName = userName;
+        this.fullName = fullName;
+        this.passWord = passWord;
+        this.avatar = avatar;
+        this.roleid = roleid;
+        this.status = status;
+        this.code = code;
         this.phone = phone;
         this.createdDate = createdDate;
     }
@@ -143,11 +164,11 @@ public class User implements Serializable {
         this.images = images;
     }
 
-    public int getRoleid() {
+    public Integer getRoleid() {
         return roleid;
     }
 
-    public void setRoleid(int roleid) {
+    public void setRoleid(Integer roleid) {
         this.roleid = roleid;
     }
 
@@ -167,10 +188,26 @@ public class User implements Serializable {
         this.createdDate = createdDate;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", email=" + email + ", userName=" + userName + ", fullName=" + fullName
                 + ", passWord=" + passWord + ", phone=" + phone + ", images=" + images + ", avatar=" + avatar
-                + ", roleid=" + roleid + ", createdDate=" + createdDate + "]";
+                + ", roleid=" + roleid + ", status=" + status + ", code=" + code + ", createdDate=" + createdDate + "]";
     }
 }

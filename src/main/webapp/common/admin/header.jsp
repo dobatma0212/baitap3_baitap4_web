@@ -25,6 +25,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/product/list">
+                            <i class="fas fa-box-open"></i> Quản Lý Sản Phẩm
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/home">
                             <i class="fas fa-globe"></i> Xem Trang Khách
                         </a>

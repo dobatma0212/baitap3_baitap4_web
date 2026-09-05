@@ -19,6 +19,11 @@
                             <i class="fas fa-home"></i> Trang Chủ
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/product">
+                            <i class="fas fa-boxes"></i> Sản Phẩm
+                        </a>
+                    </li>
                     <c:if test="${sessionScope.account != null and sessionScope.account.roleid == 1}">
                         <li class="nav-item">
                             <a class="nav-link text-warning" href="${pageContext.request.contextPath}/admin/home">

@@ -29,6 +29,25 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findByEmail(String email) {
+        if (email == null) return null;
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            String jpql = "SELECT u FROM User u WHERE LOWER(TRIM(u.email)) = LOWER(TRIM(:email))";
+            TypedQuery<User> query = em.createQuery(jpql, User.class);
+            query.setParameter("email", email.trim());
+            List<User> list = query.getResultList();
+            return list.isEmpty() ? null : list.get(0);
+        } catch (Exception e) {
+            System.err.println("Lỗi truy vấn User findByEmail: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public void insert(User user) {
         EntityManager em = JPAConfig.getEntityManager();
         EntityTransaction trans = em.getTransaction();
@@ -66,14 +85,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean checkExistEmail(String email) {
+        if (email == null) return false;
         EntityManager em = JPAConfig.getEntityManager();
         try {
-            String jpql = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
+            String jpql = "SELECT COUNT(u) FROM User u WHERE LOWER(TRIM(u.email)) = LOWER(TRIM(:email))";
             TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-            query.setParameter("email", email);
+            query.setParameter("email", email.trim());
             Long count = query.getSingleResult();
             return count != null && count > 0;
         } catch (Exception e) {
+            System.err.println("Lỗi truy vấn User checkExistEmail: " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {

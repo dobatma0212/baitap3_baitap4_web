@@ -4,9 +4,17 @@
 
     <mapping path="/login*" exclude="true" />
     <mapping path="/register*" exclude="true" />
+    <mapping path="/verify-otp*" exclude="true" />
+    <mapping path="/resend-otp*" exclude="true" />
+    <mapping path="/forgot-password*" exclude="true" />
+    <mapping path="/reset-password*" exclude="true" />
+    <mapping path="/resend-forgot-otp*" exclude="true" />
     <mapping path="/logout*" exclude="true" />
     <mapping path="/views/login.jsp" exclude="true" />
     <mapping path="/views/register.jsp" exclude="true" />
+    <mapping path="/views/verify-otp.jsp" exclude="true" />
+    <mapping path="/views/forgot-password.jsp" exclude="true" />
+    <mapping path="/views/reset-password.jsp" exclude="true" />
     <mapping path="/image*" exclude="true" />
     <mapping path="/static/*" exclude="true" />
     <mapping path="/assets/*" exclude="true" />
