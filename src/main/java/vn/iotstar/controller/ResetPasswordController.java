@@ -86,6 +86,18 @@ public class ResetPasswordController extends HttpServlet {
             return;
         }
 
+        if (!vn.iotstar.util.ValidationUtil.isValidEmail(email)) {
+            req.setAttribute("alert", "Địa chỉ email không đúng định dạng!");
+            req.getRequestDispatcher(Constant.Path.RESET_PASSWORD).forward(req, resp);
+            return;
+        }
+
+        if (!vn.iotstar.util.ValidationUtil.isValidOtp(otp)) {
+            req.setAttribute("alert", "Mã OTP không hợp lệ! Mã OTP gồm đúng 6 chữ số.");
+            req.getRequestDispatcher(Constant.Path.RESET_PASSWORD).forward(req, resp);
+            return;
+        }
+
         if (!newPassword.equals(confirmPassword)) {
             req.setAttribute("alert", "Mật khẩu xác nhận không khớp với mật khẩu mới!");
             req.getRequestDispatcher(Constant.Path.RESET_PASSWORD).forward(req, resp);

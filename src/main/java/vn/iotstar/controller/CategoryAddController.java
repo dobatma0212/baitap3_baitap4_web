@@ -44,8 +44,36 @@ public class CategoryAddController extends HttpServlet {
         Part part = req.getPart("icon");
         String icon = null;
 
+        if (name == null || name.trim().isEmpty()) {
+            req.setAttribute("alert", "Tên danh mục không được để trống!");
+            Category category = new Category();
+            category.setName(name);
+            req.setAttribute("category", category);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_ADD).forward(req, resp);
+            return;
+        }
+
+        name = name.trim();
+        if (name.length() > 255) {
+            req.setAttribute("alert", "Tên danh mục không được vượt quá 255 ký tự!");
+            Category category = new Category();
+            category.setName(name);
+            req.setAttribute("category", category);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_ADD).forward(req, resp);
+            return;
+        }
+
         if (part != null && part.getSize() > 0) {
             String originalFilename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            if (!vn.iotstar.util.ValidationUtil.isValidImageFile(originalFilename)) {
+                req.setAttribute("alert", "Ảnh đại diện phải là file định dạng ảnh (.jpg, .jpeg, .png, .webp, .gif)!");
+                Category category = new Category();
+                category.setName(name);
+                req.setAttribute("category", category);
+                req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_ADD).forward(req, resp);
+                return;
+            }
+
             int index = originalFilename.lastIndexOf(".");
             String ext = (index != -1) ? originalFilename.substring(index) : "";
             String fileName = System.currentTimeMillis() + ext;
@@ -62,6 +90,14 @@ public class CategoryAddController extends HttpServlet {
         Category category = new Category();
         category.setName(name);
         category.setIcon(icon);
+
+        String violationMsg = vn.iotstar.util.ValidationUtil.validateEntity(category);
+        if (violationMsg != null) {
+            req.setAttribute("alert", violationMsg);
+            req.setAttribute("category", category);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_ADD).forward(req, resp);
+            return;
+        }
 
         cateService.insert(category);
         resp.sendRedirect(req.getContextPath() + "/admin/category/list");

@@ -17,10 +17,20 @@
                 <h4 class="mb-0"><i class="fas fa-plus-circle"></i> Thêm Sản Phẩm Mới</h4>
             </div>
             <div class="card-body">
-                <form action="${pageContext.request.contextPath}/admin/product/add" method="post" enctype="multipart/form-data">
+                <c:if test="${not empty alert}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>${alert}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </c:if>
+
+                <form action="${pageContext.request.contextPath}/admin/product/add" method="post" enctype="multipart/form-data" class="needs-validation">
                     <div class="form-group">
                         <label for="name" class="font-weight-bold">Tên sản phẩm: <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên sản phẩm..." required />
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên sản phẩm..." 
+                               value="${product.name}" maxlength="255" required />
                     </div>
 
                     <div class="form-row">
@@ -29,39 +39,41 @@
                             <select class="form-control" id="cateId" name="cateId" required>
                                 <option value="">-- Chọn danh mục --</option>
                                 <c:forEach items="${cateList}" var="c">
-                                    <option value="${c.id}">${c.name}</option>
+                                    <option value="${c.id}" ${product.category != null && product.category.id == c.id ? 'selected' : ''}>${c.name}</option>
                                 </c:forEach>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="price" class="font-weight-bold">Giá bán (VNĐ): <span class="text-danger">*</span></label>
-                            <input type="number" step="any" min="0" class="form-control" id="price" name="price" placeholder="Ví dụ: 250000" required />
+                            <input type="number" step="any" min="0" class="form-control" id="price" name="price" 
+                                   placeholder="Ví dụ: 250000" value="${product.price > 0 ? product.price : ''}" required />
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="quantity" class="font-weight-bold">Số lượng trong kho:</label>
-                            <input type="number" min="0" class="form-control" id="quantity" name="quantity" value="0" />
+                            <input type="number" min="0" class="form-control" id="quantity" name="quantity" 
+                                   value="${product.quantity != null ? product.quantity : 0}" />
                         </div>
                         <div class="form-group col-md-6">
                             <label for="status" class="font-weight-bold">Trạng thái:</label>
                             <select class="form-control" id="status" name="status">
-                                <option value="1" selected>Đang kinh doanh</option>
-                                <option value="0">Tạm ngừng kinh doanh</option>
+                                <option value="1" ${product == null || product.status == 1 ? 'selected' : ''}>Đang kinh doanh</option>
+                                <option value="0" ${product != null && product.status == 0 ? 'selected' : ''}>Tạm ngừng kinh doanh</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description" class="font-weight-bold">Mô tả sản phẩm:</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Nhập mô tả chi tiết sản phẩm..."></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Nhập mô tả chi tiết sản phẩm...">${product.description}</textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="image" class="font-weight-bold">Hình ảnh sản phẩm:</label>
-                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*" />
-                        <small class="form-text text-muted">Hỗ trợ các định dạng .jpg, .jpeg, .png, .webp.</small>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
+                        <small class="form-text text-muted">Hỗ trợ các định dạng: .jpg, .jpeg, .png, .webp, .gif</small>
                     </div>
 
                     <div class="mt-4 text-right">

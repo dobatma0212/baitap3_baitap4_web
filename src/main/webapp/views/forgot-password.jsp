@@ -92,7 +92,8 @@
                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                         </div>
                         <input type="email" id="email" name="email" class="form-control" 
-                               value="${email != null ? email : ''}" placeholder="Nhập địa chỉ email của bạn" required autofocus>
+                               value="${email != null ? email : ''}" placeholder="Nhập địa chỉ email của bạn" 
+                               maxlength="150" required autofocus>
                     </div>
                 </div>
 

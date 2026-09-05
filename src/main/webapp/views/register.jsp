@@ -59,55 +59,74 @@
                 </div>
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/register" method="post">
+            <form action="${pageContext.request.contextPath}/register" method="post" id="registerForm">
                 <div class="form-group">
-                    <label for="username">Tài khoản</label>
+                    <label for="username">Tên tài khoản: <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-user"></i></span>
                         </div>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản" required autofocus>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản (3-50 ký tự)" 
+                               value="${username}" pattern="^[a-zA-Z0-9_]{3,50}$" 
+                               title="Tên tài khoản từ 3 đến 50 ký tự, chỉ gồm chữ cái, số và dấu gạch dưới" required autofocus>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="fullname">Họ tên</label>
+                    <label for="fullname">Họ và tên: <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-id-card"></i></span>
                         </div>
-                        <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Họ tên" required>
+                        <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Họ và tên" 
+                               value="${fullname}" maxlength="150" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Nhập Email</label>
+                    <label for="email">Địa chỉ Email: <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                         </div>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Nhập Email" required>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="name@example.com" 
+                               value="${email}" maxlength="150" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="phone">Số điện thoại</label>
+                    <label for="phone">Số điện thoại: <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-phone"></i></span>
                         </div>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Số điện thoại" required>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Ví dụ: 0912345678" 
+                               value="${phone}" pattern="^(0[3|5|7|8|9])[0-9]{8}$" 
+                               title="Số điện thoại phải gồm 10 chữ số, bắt đầu bằng 03, 05, 07, 08, 09" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Mật khẩu</label>
+                    <label for="password">Mật khẩu: <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-lock"></i></span>
                         </div>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Mật khẩu" required>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Tối thiểu 6 ký tự" 
+                               minlength="6" required>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu: <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-check-double"></i></span>
+                        </div>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Nhập lại mật khẩu" 
+                               minlength="6" required>
+                    </div>
+                    <small id="passwordMatchText" class="form-text"></small>
                 </div>
 
                 <button type="submit" class="btn btn-block btn-register mt-4">Tạo tài khoản</button>
@@ -119,6 +138,41 @@
             </form>
         </div>
     </div>
+
+    <script>
+        const pwdInput = document.getElementById('password');
+        const confirmPwdInput = document.getElementById('confirmPassword');
+        const matchText = document.getElementById('passwordMatchText');
+        const form = document.getElementById('registerForm');
+
+        function validatePasswordMatch() {
+            if (!confirmPwdInput.value) {
+                matchText.textContent = '';
+                return true;
+            }
+            if (pwdInput.value === confirmPwdInput.value) {
+                matchText.textContent = 'Mật khẩu khớp!';
+                matchText.className = 'form-text text-success font-weight-bold';
+                confirmPwdInput.setCustomValidity('');
+                return true;
+            } else {
+                matchText.textContent = 'Mật khẩu xác nhận không khớp!';
+                matchText.className = 'form-text text-danger font-weight-bold';
+                confirmPwdInput.setCustomValidity('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+        }
+
+        pwdInput.addEventListener('input', validatePasswordMatch);
+        confirmPwdInput.addEventListener('input', validatePasswordMatch);
+
+        form.addEventListener('submit', function(e) {
+            if (!validatePasswordMatch()) {
+                e.preventDefault();
+                confirmPwdInput.focus();
+            }
+        });
+    </script>
 </body>
 </html>
 

@@ -99,7 +99,7 @@
                 </div>
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/reset-password" method="post">
+            <form action="${pageContext.request.contextPath}/reset-password" method="post" id="resetPasswordForm">
                 <div class="form-group">
                     <label for="email" class="font-weight-bold" style="font-size: 14px;">Địa chỉ Email</label>
                     <div class="input-group">
@@ -118,7 +118,8 @@
                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                         </div>
                         <input type="text" id="otp" name="otp" class="form-control otp-input" 
-                               maxlength="6" placeholder="------" pattern="[0-9]{6}" required autofocus autocomplete="one-time-code">
+                               maxlength="6" placeholder="------" pattern="[0-9]{6}" inputmode="numeric" 
+                               title="Mã OTP gồm 6 chữ số" required autofocus autocomplete="one-time-code">
                     </div>
                 </div>
 
@@ -142,12 +143,48 @@
                         <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" 
                                placeholder="Nhập lại mật khẩu mới" minlength="6" required>
                     </div>
+                    <small id="resetMatchText" class="form-text"></small>
                 </div>
 
                 <button type="submit" class="btn btn-block btn-reset mt-4">
                     <i class="fas fa-check-circle mr-1"></i> Đổi Mật Khẩu
                 </button>
             </form>
+
+            <script>
+                const newPwd = document.getElementById('newPassword');
+                const confirmPwd = document.getElementById('confirmPassword');
+                const matchMsg = document.getElementById('resetMatchText');
+                const resetFrm = document.getElementById('resetPasswordForm');
+
+                function checkResetPwdMatch() {
+                    if (!confirmPwd.value) {
+                        matchMsg.textContent = '';
+                        return true;
+                    }
+                    if (newPwd.value === confirmPwd.value) {
+                        matchMsg.textContent = 'Mật khẩu khớp!';
+                        matchMsg.className = 'form-text text-success font-weight-bold';
+                        confirmPwd.setCustomValidity('');
+                        return true;
+                    } else {
+                        matchMsg.textContent = 'Mật khẩu xác nhận không khớp!';
+                        matchMsg.className = 'form-text text-danger font-weight-bold';
+                        confirmPwd.setCustomValidity('Mật khẩu không khớp!');
+                        return false;
+                    }
+                }
+
+                newPwd.addEventListener('input', checkResetPwdMatch);
+                confirmPwd.addEventListener('input', checkResetPwdMatch);
+
+                resetFrm.addEventListener('submit', function(e) {
+                    if (!checkResetPwdMatch()) {
+                        e.preventDefault();
+                        confirmPwd.focus();
+                    }
+                });
+            </script>
 
             <div class="resend-box">
                 <span class="text-muted">Chưa nhận được mã OTP? </span>

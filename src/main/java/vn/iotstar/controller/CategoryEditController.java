@@ -46,13 +46,51 @@ public class CategoryEditController extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
-        int id = Integer.parseInt(req.getParameter("id"));
+        int id = 0;
+        try {
+            id = Integer.parseInt(req.getParameter("id"));
+        } catch (NumberFormatException e) {
+            resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+            return;
+        }
+
         String name = req.getParameter("name");
         Part part = req.getPart("icon");
         String icon = null;
 
+        Category existingCategory = cateService.get(id);
+        if (existingCategory == null) {
+            resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+            return;
+        }
+
+        if (name == null || name.trim().isEmpty()) {
+            req.setAttribute("alert", "Tên danh mục không được để trống!");
+            existingCategory.setName(name);
+            req.setAttribute("category", existingCategory);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_EDIT).forward(req, resp);
+            return;
+        }
+
+        name = name.trim();
+        if (name.length() > 255) {
+            req.setAttribute("alert", "Tên danh mục không được vượt quá 255 ký tự!");
+            existingCategory.setName(name);
+            req.setAttribute("category", existingCategory);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_EDIT).forward(req, resp);
+            return;
+        }
+
         if (part != null && part.getSize() > 0) {
             String originalFilename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+            if (!vn.iotstar.util.ValidationUtil.isValidImageFile(originalFilename)) {
+                req.setAttribute("alert", "Ảnh đại diện phải là file định dạng ảnh (.jpg, .jpeg, .png, .webp, .gif)!");
+                existingCategory.setName(name);
+                req.setAttribute("category", existingCategory);
+                req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_EDIT).forward(req, resp);
+                return;
+            }
+
             int index = originalFilename.lastIndexOf(".");
             String ext = (index != -1) ? originalFilename.substring(index) : "";
             String fileName = System.currentTimeMillis() + ext;
@@ -70,6 +108,14 @@ public class CategoryEditController extends HttpServlet {
         category.setId(id);
         category.setName(name);
         category.setIcon(icon);
+
+        String violationMsg = vn.iotstar.util.ValidationUtil.validateEntity(category);
+        if (violationMsg != null) {
+            req.setAttribute("alert", violationMsg);
+            req.setAttribute("category", category);
+            req.getRequestDispatcher(Constant.Path.ADMIN_CATEGORY_EDIT).forward(req, resp);
+            return;
+        }
 
         cateService.edit(category);
         resp.sendRedirect(req.getContextPath() + "/admin/category/list");

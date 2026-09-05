@@ -17,12 +17,21 @@
                 <h4 class="mb-0"><i class="fas fa-edit"></i> Chỉnh Sửa Sản Phẩm</h4>
             </div>
             <div class="card-body">
-                <form action="${pageContext.request.contextPath}/admin/product/edit" method="post" enctype="multipart/form-data">
+                <c:if test="${not empty alert}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>${alert}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </c:if>
+
+                <form action="${pageContext.request.contextPath}/admin/product/edit" method="post" enctype="multipart/form-data" class="needs-validation">
                     <input type="hidden" name="id" value="${product.id}" />
 
                     <div class="form-group">
                         <label for="name" class="font-weight-bold">Tên sản phẩm: <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="name" name="name" value="${product.name}" required />
+                        <input type="text" class="form-control" id="name" name="name" value="${product.name}" maxlength="255" required />
                     </div>
 
                     <div class="form-row">
@@ -74,8 +83,8 @@
                             </c:choose>
                         </div>
                         <label for="image" class="font-weight-bold">Chọn ảnh mới (nếu muốn thay đổi):</label>
-                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*" />
-                        <small class="form-text text-muted">Nếu không chọn ảnh mới, hệ thống sẽ giữ lại ảnh hiện tại.</small>
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
+                        <small class="form-text text-muted">Hỗ trợ các định dạng: .jpg, .jpeg, .png, .webp, .gif. Nếu không chọn ảnh mới, hệ thống sẽ giữ lại ảnh hiện tại.</small>
                     </div>
 
                     <div class="mt-4 text-right">

@@ -85,6 +85,35 @@ public class ProfileController extends HttpServlet {
         String fullname = req.getParameter("fullname");
         String phone = req.getParameter("phone");
 
+        if (fullname == null || fullname.trim().isEmpty()) {
+            req.setAttribute("alert", "Họ và tên không được để trống!");
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/views/profile.jsp").forward(req, resp);
+            return;
+        }
+
+        fullname = fullname.trim();
+        if (fullname.length() > 150) {
+            req.setAttribute("alert", "Họ và tên không được vượt quá 150 ký tự!");
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/views/profile.jsp").forward(req, resp);
+            return;
+        }
+
+        if (phone != null && !phone.trim().isEmpty()) {
+            phone = phone.trim();
+            if (!vn.iotstar.util.ValidationUtil.isValidPhone(phone)) {
+                req.setAttribute("alert", "Số điện thoại không hợp lệ (phải gồm 10 chữ số, bắt đầu bằng 03, 05, 07, 08, 09)!");
+                user.setFullName(fullname);
+                user.setPhone(phone);
+                req.setAttribute("user", user);
+                req.getRequestDispatcher("/views/profile.jsp").forward(req, resp);
+                return;
+            }
+        } else {
+            phone = null;
+        }
+
         user.setFullName(fullname);
         user.setPhone(phone);
 
@@ -97,6 +126,13 @@ public class ProfileController extends HttpServlet {
 
             if (part != null && part.getSize() > 0) {
                 String originalFilename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                if (!vn.iotstar.util.ValidationUtil.isValidImageFile(originalFilename)) {
+                    req.setAttribute("alert", "Ảnh đại diện phải là file định dạng ảnh (.jpg, .jpeg, .png, .webp, .gif)!");
+                    req.setAttribute("user", user);
+                    req.getRequestDispatcher("/views/profile.jsp").forward(req, resp);
+                    return;
+                }
+
                 int index = originalFilename.lastIndexOf(".");
                 String ext = (index != -1) ? originalFilename.substring(index) : "";
                 String fileName = System.currentTimeMillis() + ext;

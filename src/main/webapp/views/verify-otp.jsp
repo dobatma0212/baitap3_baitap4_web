@@ -114,7 +114,8 @@
                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                         </div>
                         <input type="text" id="otp" name="otp" class="form-control otp-input" 
-                               maxlength="6" placeholder="------" pattern="[0-9]{6}" required autofocus autocomplete="one-time-code">
+                               maxlength="6" placeholder="------" pattern="[0-9]{6}" 
+                               title="Mã OTP phải gồm đúng 6 chữ số" inputmode="numeric" required autofocus autocomplete="one-time-code">
                     </div>
                 </div>
 

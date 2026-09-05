@@ -63,6 +63,13 @@ public class ForgotPasswordController extends HttpServlet {
             return;
         }
 
+        if (!vn.iotstar.util.ValidationUtil.isValidEmail(email)) {
+            req.setAttribute("alert", "Địa chỉ email không đúng định dạng!");
+            req.setAttribute("email", email);
+            req.getRequestDispatcher(Constant.Path.FORGOT_PASSWORD).forward(req, resp);
+            return;
+        }
+
         User user = userService.findByEmail(email);
         if (user == null) {
             req.setAttribute("alert", "Địa chỉ email không tồn tại trên hệ thống!");

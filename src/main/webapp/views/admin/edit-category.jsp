@@ -17,12 +17,22 @@
                 <h4 class="mb-0"><i class="fas fa-edit"></i> Chỉnh Sửa Danh Mục</h4>
             </div>
             <div class="card-body">
-                <form action="${pageContext.request.contextPath}/admin/category/edit" method="post" enctype="multipart/form-data">
+                <c:if test="${not empty alert}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>${alert}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </c:if>
+
+                <form action="${pageContext.request.contextPath}/admin/category/edit" method="post" enctype="multipart/form-data" class="needs-validation">
                     <input type="hidden" name="id" value="${category.id}" />
 
                     <div class="form-group">
-                        <label for="name" class="font-weight-bold">Tên danh mục:</label>
-                        <input type="text" class="form-control" id="name" name="name" value="${category.name}" required />
+                        <label for="name" class="font-weight-bold">Tên danh mục: <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" value="${category.name}" maxlength="255" required />
+                        <small class="form-text text-muted">Tối đa 255 ký tự.</small>
                     </div>
 
                     <div class="form-group">
@@ -39,7 +49,8 @@
                             </c:choose>
                         </div>
                         <label for="icon" class="font-weight-bold">Chọn ảnh mới (nếu muốn thay đổi):</label>
-                        <input type="file" class="form-control-file" id="icon" name="icon" accept="image/*" />
+                        <input type="file" class="form-control-file" id="icon" name="icon" accept="image/png,image/jpeg,image/webp,image/gif" />
+                        <small class="form-text text-muted">Hỗ trợ các định dạng: .jpg, .jpeg, .png, .webp, .gif</small>
                     </div>
 
                     <div class="mt-4 text-right">

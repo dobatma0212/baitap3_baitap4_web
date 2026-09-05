@@ -84,6 +84,13 @@ public class VerifyOtpController extends HttpServlet {
             return;
         }
 
+        if (!vn.iotstar.util.ValidationUtil.isValidOtp(otp)) {
+            req.setAttribute("alert", "Mã OTP không hợp lệ! Mã OTP gồm đúng 6 chữ số.");
+            req.setAttribute("email", email);
+            req.getRequestDispatcher(Constant.Path.VERIFY_OTP).forward(req, resp);
+            return;
+        }
+
         boolean isVerified = userService.verifyOtp(email, otp);
         if (isVerified) {
             HttpSession session = req.getSession(true);

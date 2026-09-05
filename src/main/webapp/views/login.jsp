@@ -63,14 +63,15 @@
                 </div>
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/login" method="post">
+            <form action="${pageContext.request.contextPath}/login" method="post" class="needs-validation">
                 <div class="form-group">
                     <label for="username">Tài khoản</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-user"></i></span>
                         </div>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản" required autofocus>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Tài khoản" 
+                               value="${username}" required autofocus>
                     </div>
                 </div>
 

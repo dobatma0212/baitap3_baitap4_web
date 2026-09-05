@@ -101,8 +101,9 @@
                             <label for="imageFile" class="btn btn-outline-primary btn-sm mt-2">
                                 <i class="fas fa-camera mr-1"></i> Chọn ảnh đại diện mới
                             </label>
-                            <input type="file" class="d-none" id="imageFile" name="images" accept="image/*" onchange="previewSelectedImage(event)" />
-                            <small class="form-text text-muted">Hỗ trợ định dạng JPG, PNG, GIF, WebP (tối đa 5MB)</small>
+                            <input type="file" class="d-none" id="imageFile" name="images" 
+                                   accept="image/png,image/jpeg,image/webp,image/gif" onchange="previewSelectedImage(event)" />
+                            <small class="form-text text-muted">Hỗ trợ định dạng: .jpg, .jpeg, .png, .webp, .gif (tối đa 5MB)</small>
                         </div>
                     </div>
 
@@ -143,14 +144,14 @@
                             </div>
                             <input type="text" class="form-control" id="fullname" name="fullname" 
                                    value="${not empty user ? user.fullName : sessionScope.account.fullName}" 
-                                   placeholder="Nhập họ và tên của bạn" required />
+                                   maxlength="150" placeholder="Nhập họ và tên của bạn" required />
                         </div>
                     </div>
 
                     <!-- Ô nhập Số điện thoại -->
                     <div class="form-group">
                         <label for="phone" class="font-weight-bold">
-                            Số điện thoại: <span class="text-danger">*</span>
+                            Số điện thoại:
                         </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -158,7 +159,9 @@
                             </div>
                             <input type="tel" class="form-control" id="phone" name="phone" 
                                    value="${not empty user ? user.phone : sessionScope.account.phone}" 
-                                   placeholder="Nhập số điện thoại (ví dụ: 0901234567)" required />
+                                   pattern="^(0[3|5|7|8|9])[0-9]{8}$"
+                                   title="Số điện thoại gồm 10 chữ số, bắt đầu bằng 03, 05, 07, 08, 09"
+                                   placeholder="Nhập số điện thoại (ví dụ: 0901234567)" />
                         </div>
                     </div>
 
@@ -183,11 +186,19 @@
         </div>
     </div>
 
-    <!-- Script xem trước ảnh khi chọn file -->
+    <!-- Script xem trước ảnh khi chọn file & kiểm tra dung lượng -->
     <script>
         function previewSelectedImage(event) {
             const input = event.target;
             if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    alert('Dung lượng ảnh vượt quá 5MB! Vui lòng chọn ảnh nhỏ hơn.');
+                    input.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const preview = document.getElementById('imagePreview');
@@ -198,7 +209,7 @@
                         placeholder.classList.add('d-none');
                     }
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
     </script>
